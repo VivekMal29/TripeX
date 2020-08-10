@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -92,42 +93,46 @@ public class JoinActivity extends AppCompatActivity {
                     final DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Trips").child(tripkey).child("Members");
                     reference.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
                             if (dataSnapshot.exists()) {
                                 FirebaseDatabase.getInstance().getReference().child("Trips").child(tripkey).child("Name").addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        tripname = (String) dataSnapshot.getValue();
-
-                                        trips.setTrip_name(tripname);
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshots) {
+                                        tripname = (String) dataSnapshots.getValue();
 
                                     }
-
                                     @Override
                                     public void onCancelled(@NonNull DatabaseError databaseError) {
 
                                     }
                                 });
 
-                                trips.setTrip_key(tripkey);
-                                trips.setMemberName(memName);
-                                memberCount = (int) dataSnapshot.getChildrenCount();
-                                Log.d("count", String.valueOf(memberCount + 1));
-                                memberWithId = "member" + (memberCount + 1);
-                                int memId = memberCount + 1;
-                                trips.setMemberId(memId);
-                                db.addTrip(trips);
-                                intent.putExtra("memberId", memId);
-                                intent.putExtra("tripKey", tripkey);
-                                intent.putExtra("memberName", memName);
-                                startActivity(intent);
-                                FirebaseDatabase.getInstance().getReference().child("Trips").child(tripkey).child("Members").child(memberWithId).child("id").setValue(memberCount + 1);
-                                FirebaseDatabase.getInstance().getReference().child("Trips").child(tripkey).child("Members").child(memberWithId).child("name").setValue(memName);
-                                FirebaseDatabase.getInstance().getReference().child("Trips").child(tripkey).child("Members").child(memberWithId).child("phone").setValue(memPhone);
-                                FirebaseDatabase.getInstance().getReference().child("Trips").child(tripkey).child("Members").child(memberWithId).child("email").setValue(memEmail);
-                                FirebaseDatabase.getInstance().getReference().child("Trips").child(tripkey).child("Members").child(memberWithId).child("expenditure by this member").setValue(0);
-                                FirebaseDatabase.getInstance().getReference().child("Trips").child(tripkey).child("Members").child(memberWithId).child("imageUrl").setValue("default");
+                                Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    public void run() {
+                                        // yourMethod();
 
+                                        trips.setTrip_key(tripkey);
+                                        trips.setMemberName(memName);
+                                        memberCount = (int) dataSnapshot.getChildrenCount();
+                                        Log.d("count", String.valueOf(memberCount + 1));
+                                        memberWithId = "member" + (memberCount + 1);
+                                        int memId = memberCount + 1;
+                                        trips.setMemberId(memId);
+                                        trips.setTrip_name(tripname);
+                                        db.addTrip(trips);
+                                        intent.putExtra("memberId", memId);
+                                        intent.putExtra("tripKey", tripkey);
+                                        intent.putExtra("memberName", memName);
+                                        startActivity(intent);
+                                        FirebaseDatabase.getInstance().getReference().child("Trips").child(tripkey).child("Members").child(memberWithId).child("id").setValue(memberCount + 1);
+                                        FirebaseDatabase.getInstance().getReference().child("Trips").child(tripkey).child("Members").child(memberWithId).child("name").setValue(memName);
+                                        FirebaseDatabase.getInstance().getReference().child("Trips").child(tripkey).child("Members").child(memberWithId).child("phone").setValue(memPhone);
+                                        FirebaseDatabase.getInstance().getReference().child("Trips").child(tripkey).child("Members").child(memberWithId).child("email").setValue(memEmail);
+                                        FirebaseDatabase.getInstance().getReference().child("Trips").child(tripkey).child("Members").child(memberWithId).child("expenditure by this member").setValue(0);
+                                        FirebaseDatabase.getInstance().getReference().child("Trips").child(tripkey).child("Members").child(memberWithId).child("imageUrl").setValue("default");
+                                    }
+                                }, 1000);
 
 
 

@@ -61,11 +61,15 @@ public class RecyclerViewAdapterChat extends RecyclerView.Adapter <RecyclerViewA
         if((memberId !=chat.getMemberId())){
 //            Log.d("Hello","hello");
             holder.mem_name.setText(chat.getMemName());
-            Glide.with(context).load(chat.getImageUrl()).into(holder.profile_pic);
+            if(!chat.getImageUrl().equals("default")){
+                Glide.with(context).load(chat.getImageUrl()).into(holder.profile_pic);
+            }
+            else{
+                holder.profile_pic.setImageResource(R.drawable.ic_account_circle_blackk_24dp);
+            }
+
         }
-        else{
-            holder.profile_pic.setImageResource(R.drawable.ic_account_circle_blackk_24dp);
-        }
+
 
     }
 

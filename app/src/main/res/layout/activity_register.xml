@@ -9,8 +9,8 @@
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="315dp"
-        android:layout_height="wrap_content"
+        android:layout_width="324dp"
+        android:layout_height="353dp"
 
         android:background="@drawable/login"
         android:orientation="vertical"
