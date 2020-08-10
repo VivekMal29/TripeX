@@ -100,25 +100,6 @@ public class JoinActivity extends AppCompatActivity {
                                         tripname = (String) dataSnapshot.getValue();
 
                                         trips.setTrip_name(tripname);
-                                        trips.setTrip_key(tripkey);
-                                        trips.setMemberName(memName);
-                                        memberCount = (int) dataSnapshot.getChildrenCount();
-                                        Log.d("count", String.valueOf(memberCount + 1));
-                                        memberWithId = "member" + (memberCount + 1);
-                                        int memId = memberCount + 1;
-                                        trips.setMemberId(memId);
-                                        db.addTrip(trips);
-                                        intent.putExtra("memberId", memId);
-                                        intent.putExtra("tripKey", tripkey);
-                                        intent.putExtra("memberName", memName);
-                                        startActivity(intent);
-                                        FirebaseDatabase.getInstance().getReference().child("Trips").child(tripkey).child("Members").child(memberWithId).child("id").setValue(memberCount + 1);
-                                        FirebaseDatabase.getInstance().getReference().child("Trips").child(tripkey).child("Members").child(memberWithId).child("name").setValue(memName);
-                                        FirebaseDatabase.getInstance().getReference().child("Trips").child(tripkey).child("Members").child(memberWithId).child("phone").setValue(memPhone);
-                                        FirebaseDatabase.getInstance().getReference().child("Trips").child(tripkey).child("Members").child(memberWithId).child("email").setValue(memEmail);
-                                        FirebaseDatabase.getInstance().getReference().child("Trips").child(tripkey).child("Members").child(memberWithId).child("expenditure by this member").setValue(0);
-                                        FirebaseDatabase.getInstance().getReference().child("Trips").child(tripkey).child("Members").child(memberWithId).child("imageUrl").setValue("default");
-
 
                                     }
 
@@ -127,6 +108,27 @@ public class JoinActivity extends AppCompatActivity {
 
                                     }
                                 });
+
+                                trips.setTrip_key(tripkey);
+                                trips.setMemberName(memName);
+                                memberCount = (int) dataSnapshot.getChildrenCount();
+                                Log.d("count", String.valueOf(memberCount + 1));
+                                memberWithId = "member" + (memberCount + 1);
+                                int memId = memberCount + 1;
+                                trips.setMemberId(memId);
+                                db.addTrip(trips);
+                                intent.putExtra("memberId", memId);
+                                intent.putExtra("tripKey", tripkey);
+                                intent.putExtra("memberName", memName);
+                                startActivity(intent);
+                                FirebaseDatabase.getInstance().getReference().child("Trips").child(tripkey).child("Members").child(memberWithId).child("id").setValue(memberCount + 1);
+                                FirebaseDatabase.getInstance().getReference().child("Trips").child(tripkey).child("Members").child(memberWithId).child("name").setValue(memName);
+                                FirebaseDatabase.getInstance().getReference().child("Trips").child(tripkey).child("Members").child(memberWithId).child("phone").setValue(memPhone);
+                                FirebaseDatabase.getInstance().getReference().child("Trips").child(tripkey).child("Members").child(memberWithId).child("email").setValue(memEmail);
+                                FirebaseDatabase.getInstance().getReference().child("Trips").child(tripkey).child("Members").child(memberWithId).child("expenditure by this member").setValue(0);
+                                FirebaseDatabase.getInstance().getReference().child("Trips").child(tripkey).child("Members").child(memberWithId).child("imageUrl").setValue("default");
+
+
 
 
                             } else {

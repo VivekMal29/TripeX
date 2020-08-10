@@ -54,18 +54,15 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this,JoinActivity.class));
             }
         });
-//        for(int i=1;i<=5;i++){
-//            db.deleteTrip(i);
-//        }
-//
-//        db.deleteTrip(1);
+
+
         List<Trips> myTripsList = db.getAllTrips();
         for (Trips myTrips : myTripsList) {
-            Log.d("Vivek_trip Name" , myTrips.getTrip_name());
-            Log.d("Vivek_trip key" , myTrips.getTrip_key());
-            Log.d("Vivek_trip Id" , String.valueOf(myTrips.getId()));
-            Log.d("Vivek_trip mem Id" , String.valueOf(myTrips.getMemberId()));
-            Log.d("Vivek_trip mem name" , String.valueOf(myTrips.getMemberName()));
+//            Log.d("Vivek_trip Name" , myTrips.getTrip_name());
+//            Log.d("Vivek_trip key" , myTrips.getTrip_key());
+//            Log.d("Vivek_trip Id" , String.valueOf(myTrips.getId()));
+//            Log.d("Vivek_trip mem Id" , String.valueOf(myTrips.getMemberId()));
+//            Log.d("Vivek_trip mem name" , String.valueOf(myTrips.getMemberName()));
         }
         myTrips.setOnClickListener(new View.OnClickListener() {
             @Override

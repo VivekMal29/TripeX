@@ -64,7 +64,7 @@ public class RecyclerViewAdapterChat extends RecyclerView.Adapter <RecyclerViewA
             Glide.with(context).load(chat.getImageUrl()).into(holder.profile_pic);
         }
         else{
-            holder.profile_pic.setImageResource(R.drawable.ic_account_circle_black_24dp);
+            holder.profile_pic.setImageResource(R.drawable.ic_account_circle_blackk_24dp);
         }
 
     }
@@ -85,7 +85,7 @@ public class RecyclerViewAdapterChat extends RecyclerView.Adapter <RecyclerViewA
 
             message = itemView.findViewById(R.id.messege);
             mem_name = itemView.findViewById(R.id.MemName);
-            profile_pic = itemView.findViewById(R.id.profile_pic);
+            profile_pic = itemView.findViewById(R.id.profile_picture);
 
         }
 
