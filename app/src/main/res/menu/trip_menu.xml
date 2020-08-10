@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/my_profile"
+        android:title="My Profile"
+        app:showAsAction="never"></item>
+
+    <item
+        android:id="@+id/share_key"
+        android:title="Share Trip Key"
+        app:showAsAction="never"></item>
+
+    <item
+        android:id="@+id/members"
+        android:title="Members"
+        app:showAsAction="never"></item>
+
+    <item
+        android:id="@+id/overview"
+        android:title="Overview"
+        app:showAsAction="never"></item>
+
+    <item
+        android:id="@+id/transactions"
+        android:title="Transactions"
+        app:showAsAction="never"></item>
+
+
+</menu>
