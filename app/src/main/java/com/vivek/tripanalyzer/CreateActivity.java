@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -39,9 +41,10 @@ public class CreateActivity extends AppCompatActivity {
     String tripname;
     String tripkey;
     Trips trips;
+    String userId;
 
     DB_Handler db = new DB_Handler(this);
-
+    FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
 
 
     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Trips");
@@ -63,7 +66,7 @@ public class CreateActivity extends AppCompatActivity {
 
         final Intent intent = new Intent(this,TripActivity.class);
 
-
+        userId = fUser.getUid();
         create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,6 +115,7 @@ public class CreateActivity extends AppCompatActivity {
                             FirebaseDatabase.getInstance().getReference().child("Trips").child(tripkey).child("Members").child("member1").child("email").setValue(memEmail);
                             FirebaseDatabase.getInstance().getReference().child("Trips").child(tripkey).child("Members").child("member1").child("expenditure by this member").setValue(0);
                             FirebaseDatabase.getInstance().getReference().child("Trips").child(tripkey).child("Members").child("member1").child("imageUrl").setValue("default");
+                            FirebaseDatabase.getInstance().getReference().child("Trips").child(tripkey).child("Members").child("member1").child("userId").setValue(userId);
 
                             intent.putExtra("tripKey",tripkey);
                             intent.putExtra("memberName",memName);

@@ -15,17 +15,30 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.vivek.tripanalyzer.Notification.Clent;
+import com.vivek.tripanalyzer.Notification.Data;
+import com.vivek.tripanalyzer.Notification.MyResponse;
+import com.vivek.tripanalyzer.Notification.Sender;
+import com.vivek.tripanalyzer.Notification.Token;
 import com.vivek.tripanalyzer.adapter.RecyclerViewAdapterChat;
 import com.vivek.tripanalyzer.models.Chat;
 import com.vivek.tripanalyzer.models.Trips;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -43,6 +56,10 @@ public class ChatActivity extends AppCompatActivity {
     ConstraintLayout constraintLayout;
 
     DatabaseReference reference;
+
+    APIService apiService;
+    FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
+    boolean notify = false  ;
 
 
     @Override
@@ -67,6 +84,7 @@ public class ChatActivity extends AppCompatActivity {
         Log.d("hello", String.valueOf(tripKey));
         constraintLayout = findViewById(R.id.cons_layout);
 
+        apiService = Clent.getClient("https://fcm.googleapis.com/").create(APIService.class);
 
         chat = new Chat();
         chatArrayList = new ArrayList<>();
@@ -129,17 +147,38 @@ public class ChatActivity extends AppCompatActivity {
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                notify=true;
                 if (!message_text.getText().toString().equals("")) {
                     final HashMap<String, String> dataMap = new HashMap<>();
                     dataMap.put("Message", message_text.getText().toString());
                     dataMap.put("memberId", String.valueOf(memberId));
                     dataMap.put("memberName", String.valueOf(memName));
                     dataMap.put("imageUrl", String.valueOf(imageUrl));
-
                     message = message_text.getText().toString();
                     FirebaseDatabase.getInstance().getReference().child("Trips").child(tripKey).child("chats").push().setValue(dataMap);
                     readMessage(message,memberId);
                     message_text.setText(null);
+
+                    FirebaseDatabase.getInstance().getReference().child("Trips").child(tripKey).child("Members").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            for(DataSnapshot snapshot:dataSnapshot.getChildren()){
+
+                                String receiver = (String) snapshot.child("userId").getValue();
+                                if(notify){
+                                    sendNotification(receiver,memName,message_text.getText().toString());
+                                }
+
+                                notify=false;
+
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
 
                 } else {
                     Toast.makeText(ChatActivity.this, "empty message", Toast.LENGTH_SHORT).show();
@@ -147,7 +186,49 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+        final String msg = message_text.getText().toString();
 
+
+
+
+    }
+
+    private void sendNotification(final String receiver, final String memName, String toString) {
+        DatabaseReference tokens  = FirebaseDatabase.getInstance().getReference("Tokens");
+        Query   query = tokens.orderByKey().equalTo(receiver);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    Token token =  snapshot.getValue(Token.class);
+                    Data data = new Data(fUser.getUid(),R.mipmap.ic_launcher,memName+":"+message,tripKey,receiver);
+
+                    Sender sender = new Sender(data , token.getToken());
+                    apiService.sendNotification(sender)
+                            .enqueue(new Callback<MyResponse>() {
+                                @Override
+                                public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
+                                    if(response.code()==200){
+                                        if(response.body().success!=1){
+                                            Toast.makeText(ChatActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<MyResponse> call, Throwable t) {
+
+                                }
+                            });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void readMessage(String message,int memberId){

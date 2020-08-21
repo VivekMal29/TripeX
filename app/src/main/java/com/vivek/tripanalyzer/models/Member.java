@@ -8,6 +8,15 @@ public class Member implements Serializable {
     String phoneNumber;
     String email;
     String imageUrl;
+    String userId;
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
     public String getImageUrl() {
         return imageUrl;
